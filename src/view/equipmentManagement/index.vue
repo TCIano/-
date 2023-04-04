@@ -1,4 +1,11 @@
-<template><div class="m-0 font-bold">123</div></template>
+<template>
+   <div>
+      <div class="m-10 h-64 font-bold bg-black">123</div>
+      <div class="m-10 h-64 font-bold bg-black">123</div>
+      <div class="m-10 h-64 font-bold bg-black">123</div>
+      <div class="m-10 h-64 font-bold bg-black">123</div>
+   </div>
+</template>
 
 <script>
 export default {

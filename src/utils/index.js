@@ -22,17 +22,17 @@ function arr2List(arr, isSelectAll, cascader) {
    head =
       arr.length > 1
          ? {
-              title: arr[0],
-              key: arr[0],
-              children: [],
-              selectable: isSelectAll ? true : false,
-           }
+            title: arr[0],
+            key: arr[0],
+            children: [],
+            selectable: isSelectAll ? true : false,
+         }
          : {
-              title: arr[0],
-              key: arr[0],
-              children: [],
-              selectable: true,
-           }
+            title: arr[0],
+            key: arr[0],
+            children: [],
+            selectable: true,
+         }
    let prev = head
    list.push(prev)
    for (let i = 1; i < arr.length; i++) {
@@ -127,4 +127,121 @@ export const isObjectEqual = (obj1, obj2) => {
       }
    }
    return true
+}
+/**
+ * 获取url参数
+ * @param {String} name url
+ * @returns 
+ */
+export const getUrlParam = function (name) { // 获取url参数
+   let reg = new RegExp('(^|&?)' + name + '=([^&]*)(&|$)', 'i')
+   let r = window.location.href.substr(1).match(reg)
+   if (r != null) {
+      return decodeURI(r[2])
+   }
+   return undefined
+}
+/**
+ * 函数防抖
+ * @param {Function} func  函数
+ * @param {Number} wait 延迟执行毫秒数
+ * @param {Boolean} immediate true 表立即执行,false 表非立即执行,立即执行是触发事件后函数会立即执行，然后n秒内不触发事件才能继续执行函数的效果
+ * @returns 
+ */
+export const debounce = function (func, wait, immediate) {
+   let timeout;
+   return function () {
+      let context = this;
+      let args = arguments;
+      if (timeout) clearTimeout(timeout);
+      if (immediate) {
+         var callNow = !timeout;
+         timeout = setTimeout(() => {
+            timeout = null;
+         }, wait)
+         if (callNow) func.apply(context, args)
+      } else {
+         timeout = setTimeout(function () {
+            func.apply(context, args)
+         }, wait);
+      }
+   }
+}
+/**
+ * 函数节流
+ * @param {Function} func 函数
+ * @param {Number} wait 延迟执行毫秒数
+ * @param {String} type 1 表时间戳版，2 表定时器版
+ * @returns 
+ */
+export const throttle = function (func, wait, type) {
+   if (type === 1) {
+      var previous = 0;
+   } else if (type === 2) {
+      var timeout;
+   }
+   return function () {
+      let context = this;
+      let args = arguments;
+      if (type === 1) {
+         let now = Date.now();
+         if (now - previous > wait) {
+            func.apply(context, args);
+            previous = now;
+         }
+      } else if (type === 2) {
+         if (!timeout) {
+            timeout = setTimeout(() => {
+               timeout = null;
+               func.apply(context, args)
+            }, wait)
+         }
+      }
+   }
+}
+/**
+ * 图片转为base64
+ * @param {String} img 图片路径
+ * @returns 
+ */
+export const getBase64 = function (img, Imgwidth, Imgheight) {
+   let getBase64Image = function (img, width, height) {
+      let canvas = document.createElement("canvas");
+      //width、height调用时传入具体像素值，控制大小,不传则默认图像大小
+      canvas.width = width ? width : img.width;
+      canvas.height = height ? height : img.height;
+      let ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      let dataURL = canvas.toDataURL();
+      return dataURL;
+   }
+   let image = new Image();
+   image.crossOrigin = '';
+   image.src = img;
+   if (img) {
+      image.onload = function () {
+         new Promise((resolve) => {
+            let url = getBase64Image(image, Imgwidth, Imgheight)
+            resolve(url)
+         })
+      }
+   }
+}
+/**
+ * 判断图片加载完成
+ * @param {*} arr 
+ * @param {*} callback 
+ */
+export const imgLoadAll = function (arr, callback) { // 图片加载
+   let arrImg = []
+   for (let i = 0; i < arr.length; i++) {
+      let img = new Image()
+      img.src = arr[i]
+      img.onload = function () {
+         arrImg.push(this)
+         if (arrImg.length == arr.length) {
+            callback && callback()
+         }
+      }
+   }
 }

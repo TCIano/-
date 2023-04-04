@@ -49,6 +49,12 @@ export default {
 </script>
 
 <style scoped>
+.side-menu {
+   /* position: fixed;
+   left: 0;
+   top: 0;
+   height: 100vh; */
+}
 .menu {
    padding: 16px 0;
 }
